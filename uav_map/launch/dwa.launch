@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+
+
+<!-- EXTRA NODES-->
+ <node name="dwa" pkg="uav_map" type="dwa" output="screen"/>
+
+
+</launch>

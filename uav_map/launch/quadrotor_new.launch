@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<launch>
+
+  <param name="use_sim_time" value="true"/>
+  
+  <arg name="name" default="quadrotor"/>
+  <arg name="paused" default="false"/>
+  <arg name="gui" default="true"/>
+  <arg name="verbose" default="false"/>
+  <arg name="world" default="quadrotor_new.world"/>
+
+  
+<!-- UAV0 .............................................................................................. -->
+    <arg name="x0"   default="0"/>
+    <arg name="y0"   default="1"/>
+    <arg name="z0"   default="0"/>
+    <arg name="yaw0" default="-1.57"/>
+
+  <include file="$(find uav_map)/launch/make_robot_description_and_call_state_publisher_quadrotor.launch">
+    <arg name="robot_name" value="robot0"/>
+
+    <arg name="x"    value="$(arg  x0)"/>
+    <arg name="y"    value="$(arg  y0)"/>
+    <arg name="z"    value="$(arg  z0)"/>
+    <arg name="yaw" default="$(arg  yaw0)"/> 
+  </include>
+<!-- ................................................................................................... -->
+
+
+
+
+
+<!-- UAV1 .............................................................................................. -->
+    <arg name="x1" default="0"/>
+    <arg name="y1" default="2"/>
+    <arg name="z1" default="0"/> 
+<arg name="yaw1" default="0"/>
+
+  <include file="$(find uav_map)/launch/make_robot_description_and_call_state_publisher_quadrotor.launch">
+    <arg name="robot_name" value="robot1"/>
+
+    <arg name="x" value="$(arg  x1)"/>
+    <arg name="y" value="$(arg  y1)"/>
+    <arg name="z" value="$(arg  z1)"/>
+    <arg name="yaw" default="$(arg  yaw1)"/> 
+  </include>
+<!-- ................................................................................................... -->
+
+
+
+
+
+<!-- UAV2 .............................................................................................. -->
+    <arg name="x2" default="0"/>
+    <arg name="y2" default="3"/>
+    <arg name="z2" default="0"/>
+    <arg name="yaw2" default="3.14"/> 
+
+  <include file="$(find uav_map)/launch/make_robot_description_and_call_state_publisher_quadrotor.launch">
+    <arg name="robot_name" value="robot2"/>
+
+    <arg name="x" value="$(arg  x2)"/>
+    <arg name="y" value="$(arg  y2)"/>
+    <arg name="z" value="$(arg  z2)"/> 
+    <arg name="yaw" default="$(arg  yaw2)"/> 
+  </include>
+<!-- ................................................................................................... -->
+
+
+
+
+
+
+<!-- UAV3 .............................................................................................. -->
+    <arg name="x3" default="0"/>
+    <arg name="y3" default="4"/>
+    <arg name="z3" default="0"/> 
+    <arg name="yaw3" default="1.57"/> 
+
+  <include file="$(find uav_map)/launch/make_robot_description_and_call_state_publisher_quadrotor.launch">
+    <arg name="robot_name" value="robot3"/>
+
+    <arg name="x" value="$(arg  x3)"/>
+    <arg name="y" value="$(arg  y3)"/>
+    <arg name="z" value="$(arg  z3)"/> 
+    <arg name="yaw" default="$(arg  yaw3)"/> 
+  </include>
+<!-- ................................................................................................... -->
+
+
+<!-- Launch gazebo -->
+
+  <node name="gazebo" pkg="gazebo_ros" type="gzserver" respawn="false" output="screen" args="$(find uav_map)/worlds/$(arg world)"/>
+  <node name="gazebo_gui" pkg="gazebo_ros" type="gzclient" respawn="false" output="screen"/> 
+
+
+  <!-- Transfer sound to ROS -->
+
+  <include file="$(find audio_capture)/launch/capture.launch">
+    <arg name="ns" value="gazebo"/>
+    <arg name="device" value="pulse"/> 
+  </include>
+
+
+
+
+</launch>
+
+
