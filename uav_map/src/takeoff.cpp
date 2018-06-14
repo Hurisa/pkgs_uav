@@ -1,8 +1,11 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include <geometry_msgs/Twist.h>
-#include <gazebo_msgs/ModelStates.h>
+//#include <gazebo_msgs/ModelStates.h>
 #include <hector_uav_msgs/EnableMotors.h>
+#include <nav_msgs/Odometry.h>
+
+#include <std_msgs/Bool.h>
 
 
 #include <stdlib.h>
@@ -19,14 +22,20 @@ class Taker
 {
 public:
   double z;
-  void getPos(const gazebo_msgs::ModelStates& msg); 
+  bool control;
+  void getPos(const nav_msgs::Odometry& msg);
+  void getAck(const std_msgs::Bool& msg);  
   
 };
 
-void Taker::getPos(const gazebo_msgs::ModelStates& msg)
+void Taker::getAck(const std_msgs::Bool& msg)
 {
+  Taker::control=msg.data;  
+}
 
-            Taker::z=msg.pose[1].position.z;
+void Taker::getPos(const nav_msgs::Odometry& msg)
+{
+  Taker::z=msg.pose.pose.position.z;
 }
 
 
@@ -44,12 +53,13 @@ int main(int argc, char **argv)
  // ros::Subscriber sep_sub = nh.subscribe("/gazebo/model_states", 1, &LevyBoid::getPos, &boid);
 
 // Create a publisher object .
-  ros::Publisher publisher = nh.advertise<geometry_msgs::Twist>("robot/cmd_vel", 1);
-  
+  ros::Publisher publisher = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
+  ros::Publisher pubState = nh.advertise<std_msgs::Bool>("takenoff", 1);
 
-  ros::Subscriber alt = nh.subscribe("/gazebo/model_states", 10, &Taker::getPos, &taker);
+  ros::Subscriber alt = nh.subscribe("ground_truth/state", 10, &Taker::getPos, &taker);
+  ros::Subscriber ack = nh.subscribe("ack", 10, &Taker::getAck, &taker);
 
-  ros::ServiceClient client = nh.serviceClient<hector_uav_msgs::EnableMotors>("robot/enable_motors");
+  ros::ServiceClient client = nh.serviceClient<hector_uav_msgs::EnableMotors>("enable_motors");
 
   hector_uav_msgs::EnableMotors srv;
 
@@ -66,32 +76,52 @@ int main(int argc, char **argv)
 
   double targetAlt(1);
 
+  std_msgs::Bool boolMsg;
+
+
   while (ros::ok())
   {
-    cout<<taker.z<<endl;
+    //cout<<taker.z<<endl;
     if(!takeoff)
     {       
-        msg.linear.z=0.1;
+        msg.linear.z=0.2;
                 //static double X1, X2;
         if(taker.z>=1)
         {
           takeoff=true;
         }
-        ROS_INFO("Going up");
+        //ROS_INFO("Going up");
+        publisher.publish(msg);
+
+        boolMsg.data=false;
+        pubState.publish(boolMsg);
     }
     else
     {    
         msg.linear.z=0;
-        ROS_INFO("Reached desired altitude");
+        //ROS_INFO("Reached desired altitude");
 
+        boolMsg.data=true;
+
+        pubState.publish(boolMsg);
+        //system("roslaunch uav_map allOne.launch");
         //static double X1, X2;
         //publisher.publish(msg);
         //ROS_INFO("stable");
+        if(!taker.control)
+        {
+          publisher.publish(msg);
+        }
+        else
+        {
+          publisher.shutdown();
+        }
+        
     }
     
-    publisher.publish(msg);
+    
 
-    ROS_INFO("going to spin");
+    //ROS_INFO("going to spin");
     ros::spinOnce();
     rate.sleep();
   }

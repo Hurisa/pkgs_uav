@@ -75,7 +75,7 @@
     <arg name="x3" default="38"/>
     <arg name="y3" default="-26"/>
     <arg name="z3" default="0.2"/> 
-    <arg name="yaw3" value="1.57"/> 
+    <arg name="yaw3" default="1.57"/> 
 
   <include file="$(find uav_map)/launch/make_robot_description_and_call_state_publisher_quadrotor.launch">
     <arg name="robot_name" value="uav3"/>

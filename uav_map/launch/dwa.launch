@@ -3,7 +3,21 @@
 
 
 <!-- EXTRA NODES-->
+<group ns="robot0">
  <node name="dwa" pkg="uav_map" type="dwa" output="screen"/>
+</group>
+
+<group ns="robot1">
+ <node name="dwa" pkg="uav_map" type="dwa" output="screen"/>
+</group>
+
+<group ns="robot2">
+ <node name="dwa" pkg="uav_map" type="dwa" output="screen"/>
+</group>
+
+<group ns="robot3">
+ <node name="dwa" pkg="uav_map" type="dwa" output="screen"/>
+</group>
 
 
 </launch>

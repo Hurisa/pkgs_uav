@@ -10,6 +10,7 @@ in respect to the map.
 
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "std_msgs/Float32.h"
 #include <geometry_msgs/Twist.h>
 #include <gazebo_msgs/ModelStates.h>
 #include <hector_uav_msgs/EnableMotors.h>
@@ -34,15 +35,15 @@ class LevyBoid
 public:
   double x, y, z;
   string mode;
-  void getPos(const gazebo_msgs::ModelStates& msg);
+  void getPos(const nav_msgs::Odometry& msg);
 };
 
-void LevyBoid::getPos(const gazebo_msgs::ModelStates& msg)
+void LevyBoid::getPos(const nav_msgs::Odometry& msg)
 {
 
-            LevyBoid::x=msg.pose[1].position.x;
-            LevyBoid::y=msg.pose[1].position.y;
-            LevyBoid::z=msg.pose[1].position.z;
+            LevyBoid::x=msg.pose.pose.position.x;
+            LevyBoid::y=msg.pose.pose.position.y;
+            LevyBoid::z=msg.pose.pose.position.z;
 }
 
 
@@ -53,13 +54,13 @@ int main(int argc, char **argv)
 {
 // Initialize the ROS system and become a node .
 
-  ros::init(argc, argv, "publish_velocity");
+  ros::init(argc, argv, "levy");
   LevyBoid boid;
 
   boid.mode="walk";
   ros::NodeHandle nh;
 
-  ros::ServiceClient client = nh.serviceClient<hector_uav_msgs::EnableMotors>("robot/enable_motors");
+  ros::ServiceClient client = nh.serviceClient<hector_uav_msgs::EnableMotors>("enable_motors");
 
   hector_uav_msgs::EnableMotors srv;
 
@@ -68,10 +69,12 @@ int main(int argc, char **argv)
 
 
 
-  ros::Subscriber sep_sub = nh.subscribe("/gazebo/model_states", 10, &LevyBoid::getPos, &boid);
+  ros::Subscriber sep_sub = nh.subscribe("ground_truth/state", 10, &LevyBoid::getPos, &boid);
 // Create a publisher object .
-  ros::Publisher publisher = nh.advertise<geometry_msgs::Twist>("robot/cmd_vel", 1);
+  ros::Publisher publisher = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
 
+  ros::Publisher theta_pub = nh.advertise<std_msgs::Float32>("theta", 1);
+  ros::Publisher jump_pub  = nh.advertise<std_msgs::Float32>("jump", 1);
 
 struct timeval time;
 gettimeofday(&time,NULL);
@@ -89,6 +92,10 @@ double vmax=0.5;
 ros::Rate rate(10);
      
 geometry_msgs::Twist msg;
+
+std_msgs::Float32 theta_msg;
+std_msgs::Float32 jump_msg;
+
 bool stop(false);
 
      //double xinit;
@@ -98,16 +105,16 @@ double dist;
 double xinit;
 double yinit;
 
-bool takeoff=false;
+bool takeoff=true;
 
 int takeoff_counter=0;
 int levy_counter=20;
 
   while(!client.call(srv)){
-    ROS_INFO("motors not started");
+    ROS_INFO("motors not started (levy)");
   }
 
-  ROS_INFO("motors started");
+  ROS_INFO("motors started (levy)");
 
 while (ros::ok()){
 
@@ -167,7 +174,7 @@ while (ros::ok()){
     	}
         cout<<"------------------------------------"<<endl;*/
 
-    	if(!takeoff){     
+    	/*if(!takeoff){     
 
         	msg.linear.z=0.1;
                 //static double X1, X2;
@@ -180,15 +187,15 @@ while (ros::ok()){
     	else{    
         msg.linear.z=0;
         ROS_INFO("Reached desired altitude");
-    	}
+    	}*/
 
-        cout<<"------------------------------------"<<endl;
+        //cout<<"------------------------------------"<<endl;
 
 
         if(levy_counter>0 && takeoff){
-        	msg.linear.x=0;
-        	msg.linear.y=0; 
-        	msg.linear.z=0;
+        	//msg.linear.x=0;
+        	//msg.linear.y=0; 
+        	//msg.linear.z=0;
         	levy_counter--;
 
         }
@@ -213,19 +220,23 @@ while (ros::ok()){
 		        theta=atan2(y,x);
 		        jump=sqrt(pow(x,2)+pow(y,2))/10;
 		        
-		        cout<<"Generating new step"<<endl;
-		        cout<<"jump "<<jump<<endl;
+		        //cout<<"Generating new step"<<endl;
+		        //cout<<"theta"<<theta<<endl;
+
+		        jump_msg.data = jump;
+		        //cout<<"jump_msg.data "<<jump_msg.data<<endl;
+		        theta_msg.data = theta;
 
  				xinit=boid.x;
 		        yinit=boid.y;
 
-		        msg.linear.x=vmax*cos(theta);
+		        //msg.linear.x=vmax*cos(theta);
 
-		        msg.linear.y=vmax*sin(theta);
-		        msg.linear.z=0;
-		        boid.mode="jump";
+		        //msg.linear.y=vmax*sin(theta);
+		        //msg.linear.z=0;
+		        //boid.mode="jump";
 	    	}
-	    	else if(boid.mode=="jump" && takeoff){ 
+	    	/*else if(boid.mode=="jump" && takeoff){ 
 	    		//cout<<"My Position (x,y) "<<boid.x<<" "<<boid.y<<endl;
 	    		//cout<<"My goal (x,y) "<<x<<" "<<y<<endl;
 	    		//dist=sqrt(pow(x-boid.x,2)+pow(y-boid.y,2));
@@ -240,11 +251,15 @@ while (ros::ok()){
 
 	    		}
 
-    	}
-    	cout<<"------------------------------------"<<endl;
+    	}*/
+    	//cout<<"------------------------------------"<<endl;
     	}	
-        publisher.publish(msg);
-        levy_counter--;
+
+    	theta_pub.publish(theta_msg);
+    	jump_pub.publish(jump_msg);
+
+        //publisher.publish(msg);
+        //levy_counter--;
         ros::spinOnce();
         rate.sleep();
   }

@@ -3,7 +3,7 @@
 <launch>
   <arg name="robot_name" default="quadrotor_ros"/>
   <arg name="model" default="$(find uav_map)/urdf/quadrotor_ros.urdf"/>
-  <arg name="world_frame" default="/map"/> <!-- This should actually be "/world". See https://github.com/ros-simulation/gazebo_ros_pkgs/pull/324 -->
+  <arg name="world_frame" default="$(arg robot_name)/map"/> <!-- This should actually be "/world". See https://github.com/ros-simulation/gazebo_ros_pkgs/pull/324 -->
 
     <arg name="x" default="2.0"/>
     <arg name="y" default="0.0"/>

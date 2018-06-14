@@ -8,7 +8,7 @@ TEST THE WORLD FILE TEST
 #include <gazebo_msgs/ModelStates.h>
 #include <hector_uav_msgs/EnableMotors.h>
 #include <sensor_msgs/LaserScan.h>
-
+#include "std_msgs/Float32.h"
 
 //#include <tf/tf.h>
 //#include <nav_msgs/Odometry.h>
@@ -31,7 +31,7 @@ class Explorer
 public:
   double x, y, targetTheta, angularMsg;
   int minGap=150;
-  float minRange=1.5;
+  float minRange=2;
   vector<int> gapsRaw, gapI, gapF, gapLength;
 
   vector<float> readings;
@@ -47,13 +47,9 @@ public:
 };
 
 float Explorer::getAngle() //gets the angle differece
-{
-
-	float theta;
+{	float theta;
 	vector<float> center;
-	vector<float> angles;
-
-//	cout<<"Explorer::gapLength.size()"<<Explorer::gapLength.size()<<endl;
+	vector<float> angles;//	cout<<"Explorer::gapLength.size()"<<Explorer::gapLength.size()<<endl;
 	for(int i(0);i<Explorer::gapLength.size();i++){
 
 		//cout<<"Explorer::gapF[i] "<<Explorer::gapF[i]<<endl;
@@ -61,8 +57,7 @@ float Explorer::getAngle() //gets the angle differece
 		//cout<<"Explorer::gapLength[i] "<<Explorer::gapLength[i]<<endl;
 		int z=0;
 		//cout<<"test 0"<<endl;
-		if (Explorer::gapLength[i]>Explorer::minGap){
-//			cout<<"test"<<endl;
+		if (Explorer::gapLength[i]>Explorer::minGap){//			cout<<"test"<<endl;
 			center.push_back((Explorer::gapF[i]+Explorer::gapI[i])/2);
 			//cout<<"center "<<center[z]<<" "<<"length "<<Explorer::gapLength[i]<<endl;
 			
@@ -92,7 +87,6 @@ float Explorer::getAngle() //gets the angle differece
 //Inputs are the message and positions in the scan vector to check
 void Explorer::getGaps(const sensor_msgs::LaserScan& msg, int posI, int posF) 
 {
-
 		Explorer::readings.clear();
 		Explorer::gapsRaw.clear();
 		//ROS_INFO("--------------------------------------------------------------------- ");
@@ -110,7 +104,7 @@ void Explorer::getGaps(const sensor_msgs::LaserScan& msg, int posI, int posF)
 
             counter++;          
         }
-        cout<<endl;
+        //cout<<endl;
         //cout<<endl;
         //ROS_INFO("...................................................................... ");
         //cout<<"Raw Gaps"<<endl;
@@ -189,21 +183,21 @@ void Explorer::getRange(const sensor_msgs::LaserScan& msg) //Accounts for the mi
 		Explorer::getGaps(msg, 360, 679); //Front 
 		Explorer::getVectors();
 		angleF=Explorer::getAngle();
-		cout<<"front angle is "<< angleF<<endl;
+		//cout<<"front angle is "<< angleF<<endl;
 
 		minAngles.push_back(angleF);
 
 		Explorer::getGaps(msg, 0, 359); //Front 
 		Explorer::getVectors();		
 		angleL=Explorer::getAngle();
-		cout<<"Right angle is "<< angleL<<endl;
+		//cout<<"Right angle is "<< angleL<<endl;
 		
 		minAngles.push_back(angleL);
 
 		Explorer::getGaps(msg, 680, 1039); //Front 
 		Explorer::getVectors();
 		angleR=Explorer::getAngle();
-		cout<<"left angle is "<< angleR<<endl;
+		//cout<<"left angle is "<< angleR<<endl;
 
 		minAngles.push_back(angleR);
 
@@ -225,17 +219,17 @@ void Explorer::getRange(const sensor_msgs::LaserScan& msg) //Accounts for the mi
 		
 		if (abs(minimumAngle)>5 && minimumAngle>0)
 		{
-			cout<<"Go Right"<<endl;
+			//cout<<"Go Right"<<endl;
 			Explorer::angularMsg=-1;
 		}
 		else if (abs(minimumAngle)>5 && minimumAngle<0)
 		{
-			cout<<"Go Left"<<endl;
+			//cout<<"Go Left"<<endl;
 			Explorer::angularMsg=1;
 		}
 		else if (abs(minimumAngle)<5)
 		{
-			cout<<"Go Forward"<<endl;
+			//cout<<"Go Forward"<<endl;
 			Explorer::angularMsg=0;
 		}
 
@@ -340,20 +334,21 @@ void Explorer::getRange(const sensor_msgs::LaserScan& msg) //Accounts for the mi
 int main(int argc, char **argv)
 {
 
-	ros::init(argc, argv, "read_LaserScan");
+	ros::init(argc, argv, "dwa");
 	ros::NodeHandle nh;
 	ros::Rate rate(10);
 	
 	Explorer explorer;
-	geometry_msgs::Twist msg;
+	std_msgs::Float32 msg;
 
-	ros::Subscriber range_sub = nh.subscribe("robot/scan", 10, &Explorer::getRange, &explorer);
-	ros::Publisher ang_pub_dwa = nh.advertise<geometry_msgs::Twist>("robot/cmd_vel", 1);
+
+	ros::Subscriber range_sub = nh.subscribe("scan", 10, &Explorer::getRange, &explorer);
+	ros::Publisher ang_pub_dwa = nh.advertise<std_msgs::Float32>("avoid", 1);	
 	
 
 	while (ros::ok()){
 
-		msg.angular.z=explorer.angularMsg;
+		msg.data=explorer.angularMsg;
 
 		ang_pub_dwa.publish(msg);
 

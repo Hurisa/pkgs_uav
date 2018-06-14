@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<launch>
+
+
+<!-- EXTRA NODES-->
+<group ns="robot0">
+ <node name="takeoff" pkg="uav_map" type="takeoff" output="screen"/>
+</group>
+
+<group ns="robot1">
+ <node name="takeoff" pkg="uav_map" type="takeoff" output="screen"/>
+</group>
+
+
+<group ns="robot2">
+ <node name="takeoff" pkg="uav_map" type="takeoff" output="screen"/>
+</group>
+
+
+<group ns="robot3">
+ <node name="takeoff" pkg="uav_map" type="takeoff" output="screen"/>
+</group>
+
+
+</launch>

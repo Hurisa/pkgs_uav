@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<launch>
+
+  <param name="use_sim_time" value="true"/>
+  
+  <arg name="name" default="quadrotor"/>
+  <arg name="paused" default="false"/>
+  <arg name="gui" default="true"/>
+  <arg name="verbose" default="false"/>
+  <arg name="world" default="myworld.world"/>
+
+  
+<!-- UAV0 .............................................................................................. -->
+    <arg name="x0"   default="1"/>
+    <arg name="y0"   default="1"/>
+    <arg name="z0"   default="0.2"/>
+    <arg name="yaw0" default="-1.57"/>
+
+  <include file="$(find uav_map)/launch/make_robot_description_and_call_state_publisher_quadrotor.launch">
+    <arg name="robot_name" value="robot0"/>
+
+    <arg name="x"    value="$(arg  x0)"/>
+    <arg name="y"    value="$(arg  y0)"/>
+    <arg name="z"    value="$(arg  z0)"/>
+    <arg name="yaw" default="$(arg  yaw0)"/> 
+  </include>
+<!-- ................................................................................................... -->
+
+
+
+
+<!-- Launch gazebo -->
+
+  <node name="gazebo" pkg="gazebo_ros" type="gzserver" respawn="false" output="screen" args="$(find uav_map)/worlds/$(arg world)"/>
+  <node name="gazebo_gui" pkg="gazebo_ros" type="gzclient" respawn="false" output="screen"/> 
+
+
+  <!-- Transfer sound to ROS -->
+
+  <include file="$(find audio_capture)/launch/capture.launch">
+    <arg name="ns" value="gazebo"/>
+    <arg name="device" value="pulse"/> 
+  </include>
+
+
+
+
+</launch>
+
+

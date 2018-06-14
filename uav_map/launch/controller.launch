@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<launch>
+
+
+<group ns="robot0">
+ <node name="controller" pkg="uav_map" type="controller" output="screen"/>
+</group>
+
+<group ns="robot1">
+ <node name="controller" pkg="uav_map" type="controller" output="screen"/>
+</group>
+
+<group ns="robot2">
+ <node name="controller" pkg="uav_map" type="controller" output="screen"/>
+</group>
+
+<group ns="robot3">
+ <node name="controller" pkg="uav_map" type="controller" output="screen"/>
+</group>
+
+
+</launch>
