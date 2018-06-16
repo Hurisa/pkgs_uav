@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <arg name="robot_name" default="robot0"/>
+  <arg name="pose_x0" default="2"/>
+  <arg name="pose_y0" default="0"/>
+  <arg name="pose_z0" default="0"/>
+  <arg name="pose_yaw0" default="0"/>
+  <arg name="robot_ID0" default="0"/>
+
+  <arg name="distance_to_walls" default="1"/>
+  <arg name="cmd_val_update_rate" default="10"/>
+  <arg name="recoveryTime" default="0.4"/>
+
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_model_$(arg robot_name0)" args="-urdf -param $(arg robot_name0)/robot_description -namespace $(arg robot_name0) -model $(arg robot_name0) -x $(arg pose_x0) -y $(arg pose_y0) -z $(arg pose_z0) -Y $(arg pose_yaw0)"/>
+  
+  <!-- <group ns="$(arg robot_name0)">   
+    <param name="robot_description" command="$(find xacro)/xacro '$(find p3at_description)/urdf/pioneer3at_rc2016.urdf.xacro' robot_name:=$(arg robot_name0)" />
+    <param name="tf_prefix" type="string" value="$(arg robot_name0)" />
+
+    <node name="robot_controller" pkg="ground_controller" type="wrapperGround.py" respawn="false" output="log">
+      <param name="distance_to_walls" value="$(arg distance_to_walls)"/>
+      <param name="cmd_val_update_rate" value="$(arg cmd_val_update_rate)"/>
+      <param name="recoveryTime" value="$(arg recoveryTime)"/>
+      <param name="robot_ID" value="$(arg robot_ID0)"/>
+    </node>
+
+    <node name="slam_gmapping" pkg="gmapping" type="slam_gmapping" respawn="false" output="log" args="scan:=/$(arg robot_name0)/scan map:=/$(arg robot_name0)/map">
+      <param name="map_frame" value="/map" />
+      <param name="odom_frame" value="/$(arg robot_name0)/odom"/>
+      <param name="base_frame" value="/$(arg robot_name0)/base_link"/>
+    </node>
+
+    <node pkg="robot_state_publisher" type="state_publisher" name="robot_state_publisher"/>
+
+    <node name="tf_static_odom_base" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 $(arg robot_name0)/hokuyo_link $(arg robot_name0)/hokuyo_frame 100"/>
+
+    <node name="map_to_image_node_mod" pkg="map_to_jpeg" type="map_to_image_node_mod" respawn="false" output="log" args="map:=/$(arg robot_name0)/map map_image/full:=/$(arg robot_name0)/map_image"/>
+  </group> -->
+
+</launch>
+

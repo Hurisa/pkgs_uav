@@ -6,31 +6,31 @@
 	<node name="takeoff" pkg="uav_map" type="takeoff" output="screen"/>
  	<node name="levy" pkg="uav_map" type="levy" output="screen"/>
  	<node name="dwa" pkg="uav_map" type="dwa" output="screen"/>
-	<!-- <node name="controller" pkg="uav_map" type="controller" output="screen"/> -->
+	<node name="controller" pkg="uav_map" type="controller" output="screen"/> 
 </group>
 
 <group ns="uav1">
 	<node name="takeoff" pkg="uav_map" type="takeoff" output="screen"/>
  	 <node name="levy" pkg="uav_map" type="levy" output="screen"/>
  	<node name="dwa" pkg="uav_map" type="dwa" output="screen"/>
-	<!--<node name="controller" pkg="uav_map" type="controller" output="screen"/> -->
+	<node name="controller" pkg="uav_map" type="controller" output="screen"/> 
 </group>
 
 <group ns="uav2">
 	<node name="takeoff" pkg="uav_map" type="takeoff" output="screen"/>
  	 <node name="levy" pkg="uav_map" type="levy" output="screen"/>
  	<node name="dwa" pkg="uav_map" type="dwa" output="screen"/>
-	<!--<node name="controller" pkg="uav_map" type="controller" output="screen"/> -->
+	<node name="controller" pkg="uav_map" type="controller" output="screen"/> 
 </group>
 
 <group ns="uav3">
 	<node name="takeoff" pkg="uav_map" type="takeoff" output="screen"/>	
  	 <node name="levy" pkg="uav_map" type="levy" output="screen"/>
  	<node name="dwa" pkg="uav_map" type="dwa" output="screen"/>
-	<!--<node name="controller" pkg="uav_map" type="controller" output="screen"/> -->
+	<node name="controller" pkg="uav_map" type="controller" output="screen"/> 
 </group>
 
-
+<!--
 
   <include file="$(find hector_mapping)/launch/mapping_default.launch">
     <arg name="robot_name" value="uav0"/>
@@ -54,5 +54,5 @@
     <arg name="robot_name" value="uav3"/>
     <arg name="scan_topic" value="uav3/scan"/>
   </include>
-
+-->
 </launch>

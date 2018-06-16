@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<launch>
+
+<!-- <include file="$(find uav_map)/launch/uavs.launch">
+    <arg name="x0"   value="-1"/>
+    <arg name="y0"   value="0"/>
+    <arg name="z0"   value="0.2"/>
+    <arg name="yaw0" value="-1.57"/>
+
+    <arg name="x1" value="-2"/>
+    <arg name="y1" value="0"/>
+    <arg name="z1" value="0.2"/> 
+    <arg name="yaw1" value="0"/>
+
+    <arg name="x2" value="-3"/>
+    <arg name="y2" value="0"/>
+    <arg name="z2" value="0.2"/>
+    <arg name="yaw2" value="3.14"/> 
+
+    <arg name="x3" value="-4"/>
+    <arg name="y3" value="0"/>
+    <arg name="z3" value="0.2"/> 
+    <arg name="yaw3" value="1.57"/> 
+
+</include> -->
+
+    <arg name="x"          default="0"/>
+    <arg name="y"          default="0"/>
+    <arg name="z"          default="0.2"/>
+    <arg name="yaw" 	   default="-1.57"/>
+    <arg name="robot_name" default="uav0"/>
+
+  <include file="$(find uav_map)/launch/make_robot_description_and_call_state_publisher_quadrotor.launch">
+    <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="x"          value="$(arg  x)"/>
+    <arg name="y"          value="$(arg  y)"/>
+    <arg name="z"          value="$(arg  z)"/>
+    <arg name="yaw"        value="$(arg  yaw)"/> 
+  </include>
+
+
+<!-- <include file="$(find map_to_jpeg)/launch/multi_robot_gen.launch"/> -->
+
+</launch>

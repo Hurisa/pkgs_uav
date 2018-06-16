@@ -30,8 +30,8 @@ class Explorer
 {
 public:
   double x, y, targetTheta, angularMsg;
-  int minGap=150;
-  float minRange=2;
+  int minGap=120;
+  float minRange=2.5;
   vector<int> gapsRaw, gapI, gapF, gapLength;
 
   vector<float> readings;

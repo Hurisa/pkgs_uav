@@ -124,7 +124,7 @@ int main(int argc, char **argv)
 
 	bool override=false;
 
-	float angleErr=0.2;
+	float angleErr=0.1;
 
 	while (ros::ok()){
 		

@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <launch>
+ <!-- roslaunch launcher gazebo_world.launch world:="maze.world"-->
 
   <param name="use_sim_time" value="true"/>
   

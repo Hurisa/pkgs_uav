@@ -110,11 +110,11 @@ bool takeoff=true;
 int takeoff_counter=0;
 int levy_counter=20;
 
-  while(!client.call(srv)){
-    ROS_INFO("motors not started (levy)");
-  }
+  //while(!client.call(srv)){
+    //ROS_INFO("motors not started (levy)");
+  //}
 
-  ROS_INFO("motors started (levy)");
+  //ROS_INFO("motors started (levy)");
 
 while (ros::ok()){
 
