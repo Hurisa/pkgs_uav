@@ -11,8 +11,8 @@
 
   
 <!-- UAV0 .............................................................................................. -->
-    <arg name="x0"   default="41"/>
-    <arg name="y0"   default="-20"/>
+    <arg name="x0"   default="0"/>
+    <arg name="y0"   default="0"/>
     <arg name="z0"   default="0.2"/>
     <arg name="yaw0" default="-1.57"/>
 
@@ -31,8 +31,8 @@
 
 
 <!-- UAV1 .............................................................................................. -->
-    <arg name="x1" default="40"/>
-    <arg name="y1" default="-22"/>
+    <arg name="x1" default="-1"/>
+    <arg name="y1" default="-1"/>
     <arg name="z1" default="0.2"/> 
 <arg name="yaw1" default="0"/>
 
@@ -51,8 +51,8 @@
 
 
 <!-- UAV2 .............................................................................................. -->
-    <arg name="x2" default="42"/>
-    <arg name="y2" default="-23"/>
+    <arg name="x2" default="1"/>
+    <arg name="y2" default="-1"/>
     <arg name="z2" default="0.2"/>
     <arg name="yaw2" default="3.14"/> 
 
@@ -72,8 +72,8 @@
 
 
 <!-- UAV3 .............................................................................................. -->
-    <arg name="x3" default="38"/>
-    <arg name="y3" default="-26"/>
+    <arg name="x3" default="2"/>
+    <arg name="y3" default="2"/>
     <arg name="z3" default="0.2"/> 
     <arg name="yaw3" value="1.57"/> 
 
