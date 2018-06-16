@@ -25,6 +25,6 @@
 </include>
 
 
-<include file="$(find map_to_jpeg)/launch/multi_robot_gen.launch"/>
+<!-- <include file="$(find map_to_jpeg)/launch/multi_robot_gen.launch"/> -->
 
 </launch>

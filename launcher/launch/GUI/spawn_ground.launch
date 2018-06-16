@@ -21,10 +21,10 @@
   <arg name="diffusion_sigma" default = "100"/>
   <arg name="diffusion_rate" default = "100"/>
   
-  <node pkg="gazebo_ros" type="spawn_model" name="spawn_model_$(arg robot_name3)" args="-urdf -param $(arg robot_name3)/robot_description -namespace $(arg robot_name3) -model $(arg robot_name3) -x $(arg x3) -y $(arg y3) -z $(arg z3) -Y $(arg yaw3)"/>
-  <group ns="$(arg robot_name3)">   
-    <param name="robot_description" command="$(find xacro)/xacro '$(find p3at_description)/urdf/pioneer3at_rc2016.urdf.xacro' robot_name:=$(arg robot_name3)" />
-    <param name="tf_prefix" type="string" value="$(arg robot_name3)" />
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_model_$(arg robot_name)" args="-urdf -param $(arg robot_name)/robot_description -namespace $(arg robot_name) -model $(arg robot_name) -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg yaw)"/>
+  <group ns="$(arg robot_name)">   
+    <param name="robot_description" command="$(find xacro)/xacro '$(find p3at_description)/urdf/pioneer3at_rc2016.urdf.xacro' robot_name:=$(arg robot_name)" />
+    <param name="tf_prefix" type="string" value="$(arg robot_name)" />
 
     <node name="map_merge" type="map_merge" pkg="multirobot_map_merge" respawn="false" output="log">
      <param name="known_init_poses" value="false"/>
@@ -35,11 +35,9 @@
 
     <node pkg="robot_state_publisher" type="state_publisher" name="robot_state_publisher"/>
 
-    <!-- <node name="slam_gmapping" pkg="gmapping" type="slam_gmapping" respawn="false" output="log" args="scan:=/$(arg robot_name3)/scan _odom_frame:=/$(arg robot_name3)/odom _base_frame:=/$(arg robot_name3)/base_link map:=/$(arg robot_name3)/map _map_frame:=/map"/> -->
+    <node name="tf_static_odom_base" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 $(arg robot_name)/hokuyo_link $(arg robot_name)/hokuyo_frame 100"/>
 
-    <node name="tf_static_odom_base" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 $(arg robot_name3)/hokuyo_link $(arg robot_name3)/hokuyo_frame 100"/>
-
-    <node name="map_to_image_node_mod" pkg="map_to_jpeg" type="map_to_image_node_mod" respawn="false" output="log" args="map:=/$(arg robot_name3)/map map_image/full:=/$(arg robot_name3)/map_image"/>
+    <node name="map_to_image_node_mod" pkg="map_to_jpeg" type="map_to_image_node_mod" respawn="false" output="log" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image"/>
 
    <node name="pheromone_map" pkg="pheromone_map" type="pheromone_wrapper.py" respawn="false" output="screen">
         <param name="width" value="$(arg width)"/>    
