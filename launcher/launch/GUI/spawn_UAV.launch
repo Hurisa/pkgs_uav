@@ -1,28 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-<!-- <include file="$(find uav_map)/launch/uavs.launch">
-    <arg name="x0"   value="-1"/>
-    <arg name="y0"   value="0"/>
-    <arg name="z0"   value="0.2"/>
-    <arg name="yaw0" value="-1.57"/>
-
-    <arg name="x1" value="-2"/>
-    <arg name="y1" value="0"/>
-    <arg name="z1" value="0.2"/> 
-    <arg name="yaw1" value="0"/>
-
-    <arg name="x2" value="-3"/>
-    <arg name="y2" value="0"/>
-    <arg name="z2" value="0.2"/>
-    <arg name="yaw2" value="3.14"/> 
-
-    <arg name="x3" value="-4"/>
-    <arg name="y3" value="0"/>
-    <arg name="z3" value="0.2"/> 
-    <arg name="yaw3" value="1.57"/> 
-
-</include> -->
+<!-- roslaunch launcher spawn_UAV.launch x:=0 y:=1 z:=0 yaw:=0 robot_name:=uav0 -->
 
     <arg name="x"          default="0"/>
     <arg name="y"          default="0"/>

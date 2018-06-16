@@ -11,4 +11,10 @@
 </group>
 
 
+  <include file="$(find hector_mapping)/launch/mapping_default.launch">
+    <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="scan_topic" value="$(arg robot_name)/scan"/>
+  </include>
+
+
 </launch>
