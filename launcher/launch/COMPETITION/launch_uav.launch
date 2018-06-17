@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+ 
+<arg name="robot_name" default="uav0">
+ 
+<group ns="$(arg robot_name)">
+	<node name="takeoff" pkg="uav_map" type="takeoff" output="screen"/>
+ 	<node name="levy" pkg="uav_map" type="levy" output="screen"/>
+ 	<node name="dwa" pkg="uav_map" type="dwa" output="screen"/>
+	<node name="controller" pkg="uav_map" type="controller" output="screen"/> 
+</group>
+
+
+  <include file="$(find hector_mapping)/launch/mapping_default.launch">
+    <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="scan_topic" value="$(arg robot_name)/scan"/>
+  </include>
+
+
+</launch>
