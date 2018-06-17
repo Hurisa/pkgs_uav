@@ -31,8 +31,10 @@ class Explorer
 public:
   double x, y, targetTheta, angularMsg;
   int minGap=150;
+  float minGapPercentage=0.1387601;
   float minRange=2.5;
   float frontGapPercentage=0.345524542829;
+  float globalDebugVar = 0.0;
   vector<int> gapsRaw, gapI, gapF, gapLength;
 
   vector<float> readings;
@@ -192,9 +194,12 @@ void Explorer::getRange(const sensor_msgs::LaserScan& msg) //Accounts for the mi
 		range_increment = msg.angle_increment;
 
 		message_size = msg.ranges.size();
+		minGap = int(minGapPercentage * message_size);
+		globalDebugVar = float (minGap);
 		midpoint = message_size / 2;
 		front_slice = frontGapPercentage * message_size;
 		step = frontGapPercentage * message_size * 0.5;
+		// globalDebugVar = float(message_size);
 
 
 		//319
@@ -220,6 +225,8 @@ void Explorer::getRange(const sensor_msgs::LaserScan& msg) //Accounts for the mi
 		//cout<<"left angle is "<< angleR<<endl;
 
 		minAngles.push_back(angleR);
+
+		// globalDebugVar = angleL;
 
 
 		float minimumAngle=1000;
@@ -359,6 +366,7 @@ int main(int argc, char **argv)
 
 	ros::Subscriber range_sub = nh.subscribe("scan", 10, &Explorer::getRange, &explorer);
 	ros::Publisher ang_pub_dwa = nh.advertise<std_msgs::Float32>("avoid", 1);	
+	ros::Publisher debug_publisher = nh.advertise<std_msgs::Float32>("debugg", 1);	
 	
 
 	while (ros::ok()){
@@ -366,6 +374,9 @@ int main(int argc, char **argv)
 		msg.data=explorer.angularMsg;
 
 		ang_pub_dwa.publish(msg);
+
+		msg.data = explorer.globalDebugVar;
+		debug_publisher.publish(msg);
 
 
         ros::spinOnce();
