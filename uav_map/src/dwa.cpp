@@ -32,6 +32,7 @@ public:
   double x, y, targetTheta, angularMsg;
   int minGap=150;
   float minRange=2.5;
+  float frontGapPercentage=0.345524542829;
   vector<int> gapsRaw, gapI, gapF, gapLength;
 
   vector<float> readings;
@@ -173,28 +174,47 @@ void Explorer::getVectors()
     	}
 }
 
+// This is the fucntion to change!!!!!
+// Parameter for 
 void Explorer::getRange(const sensor_msgs::LaserScan& msg) //Accounts for the minimum range here
 {
 		float angleF, angleR, angleL, minAngle;
+		float range_left, range_right, range_size, n_reading, range_increment, front_slice;
+		int message_size, midpoint, step;
+
 		vector<float> minAngles;
 
 		minAngles.clear();
 
-		Explorer::getGaps(msg, 360, 679); //Front 
+		range_left = msg.angle_min;
+		range_right = msg.angle_max;
+		range_size = std::max(range_left,range_right) - std::min(range_left,range_right);
+		range_increment = msg.angle_increment;
+
+		message_size = msg.ranges.size();
+		midpoint = message_size / 2;
+		front_slice = frontGapPercentage * message_size;
+		step = frontGapPercentage * message_size * 0.5;
+
+
+		//319
+		Explorer::getGaps(msg, midpoint- step, midpoint + step); //Front 
 		Explorer::getVectors();
 		angleF=Explorer::getAngle();
 		//cout<<"front angle is "<< angleF<<endl;
 
 		minAngles.push_back(angleF);
 
-		Explorer::getGaps(msg, 0, 359); //Front 
+		//359
+		Explorer::getGaps(msg, 0, midpoint- step - 1); //Front 
 		Explorer::getVectors();		
 		angleL=Explorer::getAngle();
 		//cout<<"Right angle is "<< angleL<<endl;
 		
 		minAngles.push_back(angleL);
 
-		Explorer::getGaps(msg, 680, 1039); //Front 
+		//359 to 1039
+		Explorer::getGaps(msg, midpoint + step + 1, message_size); //Front 
 		Explorer::getVectors();
 		angleR=Explorer::getAngle();
 		//cout<<"left angle is "<< angleR<<endl;
