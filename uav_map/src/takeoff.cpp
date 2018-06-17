@@ -21,7 +21,7 @@ using namespace std;
 class Taker
 {
 public:
-  double z;
+  double z, height;
   bool control;
   void getPos(const nav_msgs::Odometry& msg);
   void getAck(const std_msgs::Bool& msg);  
@@ -78,7 +78,7 @@ int main(int argc, char **argv)
 
   std_msgs::Bool boolMsg;
 
-
+  nh.getParam("height", taker.height);
   while (ros::ok())
   {
     //cout<<taker.z<<endl;

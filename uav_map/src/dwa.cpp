@@ -30,7 +30,7 @@ class Explorer
 {
 public:
   double x, y, targetTheta, angularMsg;
-  int minGap=120;
+  int minGap=150;
   float minRange=2.5;
   vector<int> gapsRaw, gapI, gapF, gapLength;
 
@@ -324,11 +324,6 @@ void Explorer::getRange(const sensor_msgs::LaserScan& msg) //Accounts for the mi
     		//cout<<"Explorer::gapLength[0] "<<Explorer::gapLength[0]<<endl;
 
 }
-
-
-
-
-
 
 
 int main(int argc, char **argv)
