@@ -3,14 +3,21 @@
 <launch>
  
 <arg name="robot_name" default="uav0"/>
+<arg name="height" default="1"/>
  
 <group ns="$(arg robot_name)">
+	
 	<node name="takeoff" pkg="uav_map" type="takeoff" output="screen">
-		<param "height" default="3" param:"12"/>
+		<!-- <remap from="$(arg robot_name)/ground_truth/state" to="$(arg robot_name)/odom" /> -->
+		<param name="height" type="double" value="$(arg height)"/>
+	</node>
 		
  	<node name="levy" pkg="uav_map" type="levy" output="screen"/>
+ 		
  	<node name="dwa" pkg="uav_map" type="dwa" output="screen"/>
 	<node name="controller" pkg="uav_map" type="controller" output="screen"/> 
+	
+	<node pkg="edinbots_detection" type="detect_victim_rgb.py" name="DetectVictimRGB"/>
 </group>
 
 <!--

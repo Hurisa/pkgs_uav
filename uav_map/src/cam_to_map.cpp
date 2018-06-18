@@ -4,11 +4,13 @@
 #include <gazebo_msgs/ModelStates.h>
 #include <hector_uav_msgs/EnableMotors.h>
 #include <sensor_msgs/LaserScan.h>
+#include <sensor_msgs/PointCloud.h>
 #include "std_msgs/Float32.h"
 
 #include "edinbots_detection/Detector.h"
 
 #include <geometry_msgs/Point.h>
+#include <geometry_msgs/Point32.h>
 
 //#include <tf/tf.h>
 //#include <nav_msgs/Odometry.h>
@@ -30,15 +32,20 @@ class Translator
 public: 
 	vector<float> x, y;
 
-	void getVictim(const edinbots_detection::Detector& msg);
+	void getVictim(const sensor_msgs::PointCloud& msg);
 	//xc yc;
 	//
 }; 
 
-void Translator::getVictim(const edinbots_detection::Detector& msg)
+void Translator::getVictim(const sensor_msgs::PointCloud& msg)
 {
-	Translator::x=msg.Xc;
-	Translator::y=msg.Yc;
+	//Translator::x=msg.Xc;
+	//Translator::y=msg.Yc;
+	vector<geometry_msgs::Point32> points = msg.points;
+
+	cout<<points.size()<<endl;
+
+
 }
 
 int main(int argc, char **argv)
@@ -49,14 +56,12 @@ int main(int argc, char **argv)
 	ros::Rate rate(10);
 	
 	Translator translator;
-	
-
 	geometry_msgs::Point point;
 
 
 
 
-	ros::Subscriber victims_sub = nh.subscribe("detection/xynbb_rgb", 10, &Translator::getVictim, &translator);
+	ros::Subscriber victims_sub = nh.subscribe("detection/victim_markers", 10, &Translator::getVictim, &translator);
 	ros::Publisher victims = nh.advertise<geometry_msgs::Point>("/ground/poi", 1);
 	
 
@@ -64,8 +69,8 @@ int main(int argc, char **argv)
 	while (ros::ok()){
 
 
-		point.x=translator.x[0];
-		point.y=translator.y[0];
+		//point.x=translator.x[0];
+		//point.y=translator.y[0];
 
 		victims.publish(point);
 

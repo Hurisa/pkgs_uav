@@ -71,7 +71,7 @@ int main(int argc, char **argv)
 
   ros::Subscriber sep_sub = nh.subscribe("ground_truth/state", 10, &LevyBoid::getPos, &boid);
 // Create a publisher object .
-  ros::Publisher publisher = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
+  //ros::Publisher publisher = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
 
   ros::Publisher theta_pub = nh.advertise<std_msgs::Float32>("theta", 1);
   ros::Publisher jump_pub  = nh.advertise<std_msgs::Float32>("jump", 1);

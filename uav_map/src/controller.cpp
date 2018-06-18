@@ -124,7 +124,7 @@ int main(int argc, char **argv)
 
 	bool override=false;
 
-	float angleErr=0.1;
+	float angleErr=0.15;
 
 	while (ros::ok()){
 		
@@ -181,31 +181,7 @@ int main(int argc, char **argv)
 						
 
 					}
-					/*else if((angle-controller.yaw)/angle<angleErr&&override)
-					{
-						vel_msg.linear.x=1;
-						cout<<"moving forward"<<endl;
-						//controller.jumpCompleted=true;
-						vel_msg.angular.z=0;
-						
-					}
-					else if((angle-controller.yaw)/angle<angleErr&&!override)
-					{
-						vel_msg.linear.x=1;
-						//cout<<"Option3"<<endl;
-						//controller.jumpCompleted=true;
-						vel_msg.angular.z=0;
-						
-					}		
-					else if((angle-controller.yaw)/angle>angleErr&&override)
-					{
-						vel_msg.linear.x=1;
-						//cout<<"Option4"<<endl;
-						//controller.jumpCompleted=true;
-						vel_msg.angular.z=0;
-						
-					}*/						
-					
+		
 
 					distance=sqrt(pow(xinit-controller.x,2)+pow(yinit-controller.y,2))+oldDistance;
 					cout<<"distance "<<distance<<endl;
