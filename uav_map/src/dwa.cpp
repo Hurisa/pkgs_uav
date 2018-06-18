@@ -50,6 +50,7 @@ float Explorer::getAngle() //gets the angle differece
 {	float theta;
 	vector<float> center;
 	vector<float> angles;//	cout<<"Explorer::gapLength.size()"<<Explorer::gapLength.size()<<endl;
+	
 	for(int i(0);i<Explorer::gapLength.size();i++){
 
 		//cout<<"Explorer::gapF[i] "<<Explorer::gapF[i]<<endl;

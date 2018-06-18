@@ -127,6 +127,8 @@ add_executable(levy src/levy.cpp)
 add_executable(takeoff src/takeoff.cpp)
 add_executable(dwa src/dwa.cpp)
 add_executable(controller src/controller.cpp)
+
+add_executable(cam_to_map src/cam_to_map.cpp)
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/uav_map.cpp
@@ -145,7 +147,7 @@ target_link_libraries(levy ${catkin_LIBRARIES})
 target_link_libraries(takeoff ${catkin_LIBRARIES})
 target_link_libraries(dwa ${catkin_LIBRARIES})
 target_link_libraries(controller ${catkin_LIBRARIES})
-
+target_link_libraries(cam_to_map ${catkin_LIBRARIES})
 
 
 

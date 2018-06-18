@@ -72,21 +72,21 @@ int main(int argc, char **argv)
   ROS_INFO("motors started");
   bool takeoff=false;
   geometry_msgs::Twist msg;
-  ros::Rate rate(10);
+  ros::Rate rate(2);
 
   double targetAlt(1);
-
+  nh.getParam("height", taker.height);
   std_msgs::Bool boolMsg;
 
-  nh.getParam("height", taker.height);
+  nh.getParam("takeoff/height", taker.height);
   while (ros::ok())
   {
-    //cout<<taker.z<<endl;
+    cout<<"target height"<<taker.height<<endl;
     if(!takeoff)
     {       
         msg.linear.z=0.2;
-                //static double X1, X2;
-        if(taker.z>=1)
+        cout<<"current height"<<taker.z<<endl;
+        if(taker.z>=taker.height)
         {
           takeoff=true;
         }
@@ -100,9 +100,7 @@ int main(int argc, char **argv)
     {    
         msg.linear.z=0;
         //ROS_INFO("Reached desired altitude");
-
         boolMsg.data=true;
-
         pubState.publish(boolMsg);
         //system("roslaunch uav_map allOne.launch");
         //static double X1, X2;
