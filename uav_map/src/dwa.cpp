@@ -69,7 +69,9 @@ float Explorer::getAngle() //gets the angle differece
 	vector<float> center;
 	vector<float> angles;//	cout<<"Explorer::gapLength.size()"<<Explorer::gapLength.size()<<endl;
 
+
 	int z=0;
+
 	
 	for(int i(0);i<Explorer::gapLength.size();i++){
 

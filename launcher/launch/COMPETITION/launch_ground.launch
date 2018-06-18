@@ -53,6 +53,12 @@
         <param name="diffusion_sigma" value = "$(arg diffusion_sigma)"/>
         <param name="diffusion_rate" value = "$(arg diffusion_rate)"/>
     </node> 
+    
+    <node name="ground_map_control" pkg="map_to_jpeg" type="ground_map_control" cwd="node" respawn="false" output="screen" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image">
+      <param name="save_map" value="true"/>
+    </node>
+    
+    
 	</group>
 
 </launch>
