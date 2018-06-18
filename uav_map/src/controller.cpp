@@ -8,8 +8,13 @@
 #include <hector_uav_msgs/EnableMotors.h>
 #include <nav_msgs/Odometry.h>
 
+#include "edinbots_detection/Detector.h"
+#include <sensor_msgs/PointCloud.h>
+
 #include <tf/tf.h>
 #include <nav_msgs/Odometry.h>
+
+#include <geometry_msgs/Point32.h>
 
 #include <stdlib.h>
 #include <iostream>
@@ -39,6 +44,8 @@ public:
 	void getYaw(const nav_msgs::Odometry& msg);
 
 	void getLift(const std_msgs::Bool& msg);
+
+	void getVictim(const sensor_msgs::PointCloud& msg);
 };
 
 
@@ -92,6 +99,14 @@ void Controller::get_avoidTheta(const std_msgs::Float32& msg)
 	Controller::avoidTheta=msg.data;
 }
 
+void Controller::getVictim(const sensor_msgs::PointCloud& msg)
+{
+	//Translator::x=msg.Xc;
+	//Translator::y=msg.Yc;
+	vector<geometry_msgs::Point32> points = msg.points;
+	cout<<points.size()<<endl;
+
+}
 
 int main(int argc, char **argv)
 {

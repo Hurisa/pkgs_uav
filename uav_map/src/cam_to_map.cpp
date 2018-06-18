@@ -45,7 +45,6 @@ void Translator::getVictim(const sensor_msgs::PointCloud& msg)
 
 	cout<<points.size()<<endl;
 
-
 }
 
 int main(int argc, char **argv)
