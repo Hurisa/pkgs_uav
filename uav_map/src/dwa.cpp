@@ -24,6 +24,8 @@ TEST THE WORLD FILE TEST
 //#include <dwa_planner.h>
 
 
+#define MATHS_PI 3.141592653589793238463
+
 using namespace std;
 
 class Explorer
@@ -31,8 +33,24 @@ class Explorer
 public:
   double x, y, targetTheta, angularMsg;
   int minGap=150;
+  float minGapPercentage=0.1387601;
   float minRange=2.5;
-  vector<int> gapsRaw, gapI, gapF, gapLength;
+  float frontGapPercentage=0.345524542829;
+  float globalDebugVar = 0.0;
+
+  vector<int> gapsRaw, gapI, gapF, gapLength;//size of gaps found
+  int total_view_deg = 260;//total view
+  int degree_of_centre_from_left = 130;//half the view in order to find the centre of view
+  int size_of_laser_sanges_array = 1040;//size of ranges
+  
+
+/*
+  gapsRaw, raw sensing 
+  gapI, initial position of the gap
+  gapF, final position of the gap
+  gapLength size of gaps found
+*/
+
 
   vector<float> readings;
   void getRange(const sensor_msgs::LaserScan& msg); // chooses the range
@@ -50,23 +68,32 @@ float Explorer::getAngle() //gets the angle differece
 {	float theta;
 	vector<float> center;
 	vector<float> angles;//	cout<<"Explorer::gapLength.size()"<<Explorer::gapLength.size()<<endl;
+
+
+	int z=0;
+
 	
 	for(int i(0);i<Explorer::gapLength.size();i++){
 
 		//cout<<"Explorer::gapF[i] "<<Explorer::gapF[i]<<endl;
 		//cout<<"Explorer::gapI[i] "<<Explorer::gapI[i]<<endl;
 		//cout<<"Explorer::gapLength[i] "<<Explorer::gapLength[i]<<endl;
-		int z=0;
 		//cout<<"test 0"<<endl;
+
+
 		if (Explorer::gapLength[i]>Explorer::minGap){//			cout<<"test"<<endl;
 			center.push_back((Explorer::gapF[i]+Explorer::gapI[i])/2);
 			//cout<<"center "<<center[z]<<" "<<"length "<<Explorer::gapLength[i]<<endl;
 			
 
-			angles.push_back(center[z]*260/1040-130);
+			//total view
+			//size of ranges
+			//half the view in order to find the centre of view
+			angles.push_back(center[z]*total_view_deg/size_of_laser_sanges_array-degree_of_centre_from_left);
 			z++;
 			//cout<<"angle "<< angles[z]<<endl;
 		}
+		  
 	}
     //cout<<angles.size()<<endl;
 
@@ -174,33 +201,63 @@ void Explorer::getVectors()
     	}
 }
 
+// This is the fucntion to change!!!!!
+// Parameter for 
 void Explorer::getRange(const sensor_msgs::LaserScan& msg) //Accounts for the minimum range here
 {
 		float angleF, angleR, angleL, minAngle;
+		float range_left, range_right, range_size_rads, n_reading, range_increment, front_slice;
+		int message_size, midpoint, step;
+
 		vector<float> minAngles;
 
 		minAngles.clear();
 
-		Explorer::getGaps(msg, 360, 679); //Front 
+		range_left = msg.angle_min;
+		range_right = msg.angle_max;
+		range_size_rads = std::max(range_left,range_right) - std::min(range_left,range_right);
+		range_increment = msg.angle_increment;
+
+		total_view_deg = range_size_rads * (180.0/MATHS_PI);
+		degree_of_centre_from_left = int (total_view_deg/2);
+		
+		globalDebugVar = degree_of_centre_from_left;
+
+		message_size = msg.ranges.size();
+		size_of_laser_sanges_array = message_size;
+		minGap = int(minGapPercentage * message_size);
+		// globalDebugVar = float (minGap);
+		midpoint = message_size / 2;
+		front_slice = frontGapPercentage * message_size;
+		step = frontGapPercentage * message_size * 0.5;
+		// globalDebugVar = float(message_size);
+
+
+		//319
+		Explorer::getGaps(msg, midpoint- step, midpoint + step); //Front 
 		Explorer::getVectors();
 		angleF=Explorer::getAngle();
 		//cout<<"front angle is "<< angleF<<endl;
 
 		minAngles.push_back(angleF);
 
-		Explorer::getGaps(msg, 0, 359); //Front 
+		//359
+		Explorer::getGaps(msg, 0, midpoint- step - 1); //Front 
 		Explorer::getVectors();		
 		angleL=Explorer::getAngle();
 		//cout<<"Right angle is "<< angleL<<endl;
 		
 		minAngles.push_back(angleL);
 
-		Explorer::getGaps(msg, 680, 1039); //Front 
+		//359 to 1039
+		Explorer::getGaps(msg, midpoint + step + 1, message_size); //Front 
 		Explorer::getVectors();
 		angleR=Explorer::getAngle();
 		//cout<<"left angle is "<< angleR<<endl;
 
 		minAngles.push_back(angleR);
+
+		// globalDebugVar = angleL;
 
 
 		float minimumAngle=1000;
@@ -340,6 +397,7 @@ int main(int argc, char **argv)
 
 	ros::Subscriber range_sub = nh.subscribe("scan", 10, &Explorer::getRange, &explorer);
 	ros::Publisher ang_pub_dwa = nh.advertise<std_msgs::Float32>("avoid", 1);	
+	ros::Publisher debug_publisher = nh.advertise<std_msgs::Float32>("debugg", 1);	
 	
 
 	while (ros::ok()){
@@ -347,6 +405,9 @@ int main(int argc, char **argv)
 		msg.data=explorer.angularMsg;
 
 		ang_pub_dwa.publish(msg);
+
+		msg.data = explorer.globalDebugVar;
+		debug_publisher.publish(msg);
 
 
         ros::spinOnce();
