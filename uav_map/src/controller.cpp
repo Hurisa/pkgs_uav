@@ -31,7 +31,7 @@ public:
 	float x, y, yaw;
 	float levyTheta, levyJump;
 	float avoidTheta;
-	bool jumpCompleted, takeoff;
+	bool jumpCompleted, takeoff, victim;
 
 	string state;
 
@@ -45,7 +45,7 @@ public:
 
 	void getLift(const std_msgs::Bool& msg);
 
-	void getVictim(const sensor_msgs::PointCloud& msg);
+	void getVictim(const edinbots_detection::Detector& msg);
 };
 
 
@@ -99,12 +99,14 @@ void Controller::get_avoidTheta(const std_msgs::Float32& msg)
 	Controller::avoidTheta=msg.data;
 }
 
-void Controller::getVictim(const sensor_msgs::PointCloud& msg)
+void Controller::getVictim(const edinbots_detection::Detector& msg)
 {
 	//Translator::x=msg.Xc;
 	//Translator::y=msg.Yc;
-	vector<geometry_msgs::Point32> points = msg.points;
-	cout<<points.size()<<endl;
+	//vector<geometry_msgs::Point32Controller::avoidTheta=msg.data;points = msg.points;
+	cout<<"Found a victim"<<endl;
+	Controller::victim=true;
+
 
 }
 
@@ -116,6 +118,7 @@ int main(int argc, char **argv)
 	ros::Rate rate(10);
 
 	Controller controller;
+	controller.victim=false;
 	controller.jumpCompleted=true;
 
 	geometry_msgs::Twist vel_msg;
@@ -131,6 +134,8 @@ int main(int argc, char **argv)
 	ros::Subscriber pos_sub  = nh.subscribe("ground_truth/state", 10, &Controller::getPos, &controller);
 	ros::Subscriber yaw_sub  = nh.subscribe("ground_truth/state", 10, &Controller::getYaw, &controller);
 	ros::Subscriber takeoff_sub  = nh.subscribe("takenoff", 10, &Controller::getLift, &controller);
+
+	ros::Subscriber victims_sub = nh.subscribe("detection/xynbb_rgb", 10, &Controller::getVictim, &controller);
 	
 	controller.jumpCompleted=true;
 
@@ -143,6 +148,7 @@ int main(int argc, char **argv)
 
 	while (ros::ok()){
 		
+
 		//cout<<"*"<<controller.takeoff<<"*"<<endl;
 		if(controller.takeoff)
 		{	
@@ -151,7 +157,7 @@ int main(int argc, char **argv)
 			vel_msg.linear.z=0;
 			///cout<<controller.yaw<<endl;
 
-			if(controller.avoidTheta==0)
+				if(controller.avoidTheta==0)
 			{
 
 				if (controller.jumpCompleted)
@@ -222,6 +228,9 @@ int main(int argc, char **argv)
 
 
 			}
+
+			
+
 			vel.publish(vel_msg);
 			ack.publish(boolMsg);
 		}
