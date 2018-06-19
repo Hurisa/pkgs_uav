@@ -34,3 +34,9 @@ Also within the namespace add
 
 
 Ignore other changes in the push but do catkin_make.
+
+
+
+# GROUND ROBOT INTEGRATION
+
+When running this node on the pioneers, the topic 'scan' must be remapped to the 'hokuyo' node instead or it will not work
