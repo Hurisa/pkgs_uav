@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   gazebo_ros_control
   hector_uav_msgs
   sensor_msgs
+  edinbots_detection
 )
 
 ## System dependencies are found with CMake's conventions

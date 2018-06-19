@@ -33,19 +33,14 @@ public:
 	vector<float> x, y;
 
 	void getVictim(const sensor_msgs::PointCloud& msg);
+	vector<geometry_msgs::Point32> points;
 	//xc yc;
 	//
 }; 
 
 void Translator::getVictim(const sensor_msgs::PointCloud& msg)
 {
-	//Translator::x=msg.Xc;
-	//Translator::y=msg.Yc;
-	vector<geometry_msgs::Point32> points = msg.points;
-
-	cout<<points.size()<<endl;
-
-
+	points = msg.points;
 }
 
 int main(int argc, char **argv)
@@ -63,6 +58,16 @@ int main(int argc, char **argv)
 
 	ros::Subscriber victims_sub = nh.subscribe("detection/victim_markers", 10, &Translator::getVictim, &translator);
 	ros::Publisher victims = nh.advertise<geometry_msgs::Point>("/ground/poi", 1);
+
+
+	int numberOfDetection = translator.points.size();
+
+	if( numberOfDetection){
+		for (int i = 0; i < numberOfDetection; i++){
+			geometry_msgs::Point32 tempPoint = translator.points[i];
+			victims.publish(tempPoint);
+		}
+	}
 	
 
 
