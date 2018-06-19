@@ -12,21 +12,22 @@
 		<param name="height" type="double" value="$(arg height)"/>
 	</node>
 		
- 	<!-- <node name="levy" pkg="uav_map" type="levy" output="screen"/>  		
- 	<node name="dwa" pkg="uav_map" type="dwa" output="screen"/> -->
+    <node name="levy" pkg="uav_map" type="levy" output="screen"/>  		
+ 	<node name="dwa" pkg="uav_map" type="dwa" output="screen"/> 
 	<node name="controller" pkg="uav_map" type="controller" output="screen"/>
 	
 	<node pkg="edinbots_detection" type="detect_victim_rgb.py" name="DetectVictimRGB">
 		<remap to="front_cam/camera/image" from="camera/rgb/image_raw"/>
 	</node>
 		
+	<node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0 0 0 0 0 0 $(arg robot_name)/laser0_frame $(arg robot_name)/hokuyo_link 100" />
 		
 </group>
 
 
-<include file="$(find hector_mapping)/launch/mapping_default.launch">
+<!-- <include file="$(find hector_mapping)/launch/mapping_default.launch">
    <arg name="robot_name" value="$(arg robot_name)"/>
   <arg name="scan_topic" value="$(arg robot_name)/scan"/>
-</include>
+</include> -->
 
 </launch> 
