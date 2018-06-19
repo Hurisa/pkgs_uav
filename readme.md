@@ -13,7 +13,6 @@ inside the group tag
 
 in file launch_uav.launch delete the following code 
 
-
 <include file="$(find hector_mapping)/launch/mapping_default.launch">
   <arg name="robot_name" value="$(arg robot_name)"/>
   <arg name="scan_topic" value="$(arg robot_name)/scan"/>
@@ -28,4 +27,10 @@ and replace with the following WITHIN THE NAMESPACE
     <param name="base_frame" value="/$(arg robot_name)/base_link"/>
 </node>
 
-H
+Also within the namespace add
+
+<node pkg="tf" type="static_transform_publisher" name="broadcaster_laser_frame_to_hokyuo" args="0 0 0 0 0 0 $(arg robot_name)/laser0_frame $(arg robot_name)/hokuyo_link 100" />
+<node pkg="tf" type="static_transform_publisher" name="world_to_map" args="0 0 0 0 0 0 /world /map 100" />
+
+
+Ignore other changes in the push but do catkin_make.
