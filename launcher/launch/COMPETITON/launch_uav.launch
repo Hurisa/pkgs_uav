@@ -25,8 +25,9 @@
       <param name="base_frame" value="/$(arg robot_name)/base_link"/>
     </node>
 	
+	 <include file="$(find edinbots_launcher)/launch/launch_detection.launch"/>	
 
-	<node name="map_to_image_node_mod" pkg="map_to_jpeg" type="map_to_image_node_mod" respawn="false" output="screen" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image"/>
+	<!-- <node name="map_to_image_node_mod" pkg="map_to_jpeg" type="map_to_image_node_mod" respawn="false" output="screen" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image"/> -->
 
 
 </group>

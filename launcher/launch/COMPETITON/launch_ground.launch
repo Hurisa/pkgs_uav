@@ -8,7 +8,7 @@
   <arg name="y" default="0"/>
   <arg name="z" default="0"/>
   <arg name="yaw" default="0"/> -->
-  <arg name="conf" default="0.4"/>
+  <arg name="conf" default="0.25"/>
   <arg name="width" default="100"/>
 
  
@@ -25,10 +25,10 @@
      <param name="confidence" value="$(arg conf)"/>
     </node>
 
-    <node name="map_to_image_node_mod" pkg="map_to_jpeg" type="map_to_image_node_mod" respawn="false" output="screen" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image"/>
+    <!-- <node name="map_to_image_node_mod" pkg="map_to_jpeg" type="map_to_image_node_mod" respawn="false" output="screen" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image"/> -->
 
-	<node name="map_to_image_node_mod" pkg="map_to_jpeg" type="ground_map_control" respawn="false" output="screen" if="$(arg ground)" args="map:=/$(arg robot_name0)/map map_image/full:=/$(arg robot_name0)/map_image">
-      <param name="save_map" value="false"/>
+	<node name="print_victims" pkg="map_to_jpeg" type="ground_map_control" respawn="false" output="screen" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image">
+      <param name="save_map" value="true"/>
     </node>
     <!-- <node name="map_to_image_node_mod" pkg="map_to_jpeg" type="ground_map_control" respawn="false" output="screen" if="$(arg ground)" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image">
       <param name="save_map" value="false"/>
