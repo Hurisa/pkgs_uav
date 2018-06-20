@@ -5,7 +5,7 @@
    <arg name="robot_name" value="uav0"/> 
  </include>
  
-<include file="$(find launcher)/launch/COMPETITON/launch_uav.launch">
+  <!-- <include file="$(find launcher)/launch/COMPETITON/launch_uav.launch">
    <arg name="robot_name" value="uav1"/> 
  </include> -
  
@@ -15,7 +15,7 @@
  </include>
  
  
-  <!-- <include file="$(find launcher)/launch/COMPETITON/launch_robot.launch">
+<include file="$(find launcher)/launch/COMPETITON/launch_robot.launch">
    <arg name="robot_name" value="robot2"/> 
  </include> -->
 
