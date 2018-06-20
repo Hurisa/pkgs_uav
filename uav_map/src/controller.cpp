@@ -8,6 +8,8 @@
 #include <hector_uav_msgs/EnableMotors.h>
 #include <nav_msgs/Odometry.h>
 
+#include <string>
+
 #include "edinbots_detection/Detector.h"
 #include <sensor_msgs/PointCloud.h>
 
@@ -32,6 +34,7 @@ public:
 	float levyTheta, levyJump;
 	float avoidTheta;
 	bool jumpCompleted, takeoff, victim;
+	string teleop;
 
 	string state;
 
@@ -46,6 +49,8 @@ public:
 	void getLift(const std_msgs::Bool& msg);
 
 	void getVictim(const edinbots_detection::Detector& msg);
+
+	void getOperator(const std_msgs::String& msg);
 };
 
 
@@ -106,10 +111,18 @@ void Controller::getVictim(const edinbots_detection::Detector& msg)
 	//vector<geometry_msgs::Point32Controller::avoidTheta=msg.data;points = msg.points;
 	cout<<"Found a victim"<<endl;
 	Controller::victim=true;
-
-
 }
 
+void Controller::getOperator(const std_msgs::String& msg)
+{
+
+	cout<<"IN REMOTE CONTROL "<<endl;
+	cout<<"msg data "<<msg.data<<"*"<<endl;
+	Controller::teleop=msg.data;
+	cout<<"controller teleop "<<Controller::teleop<<"*"<<endl;
+}
+
+	
 int main(int argc, char **argv)
 {
 
@@ -136,6 +149,8 @@ int main(int argc, char **argv)
 	ros::Subscriber takeoff_sub  = nh.subscribe("takenoff", 10, &Controller::getLift, &controller);
 
 	ros::Subscriber victims_sub = nh.subscribe("detection/xynbb_rgb", 10, &Controller::getVictim, &controller);
+
+	ros::Subscriber teleop_sub  = nh.subscribe("/gui/control", 10, &Controller::getOperator, &controller);
 	
 	controller.jumpCompleted=true;
 
@@ -144,102 +159,123 @@ int main(int argc, char **argv)
 
 	bool override=false;
 
+	string ns;
+	ns=nh.getNamespace();
+	ns.erase(ns.begin());
+	ns.erase(ns.begin());
+	//string cmd;
+
+	//cmd=controller.teleop;
+
+	//cout<<"HEREEEEEEEE "<<cmd<<endl;
+
 	float angleErr=0.2;
 
 	while (ros::ok()){
 		
+		
 
-		//cout<<"*"<<controller.takeoff<<"*"<<endl;
-		if(controller.takeoff)
-		{	
-			boolMsg.data=true;
-	 		cout<<"--------------------------------------------------------------------"<<endl;
-			vel_msg.linear.z=0;
-			///cout<<controller.yaw<<endl;
+		//cout<<ns<<endl;
+		//cout<<"HEREEEEEEEE "<<controller.teleop<<endl;
+		if (ns!=controller.teleop)
+		{
+			cout<<"controller teleop should be done here"<<controller.teleop<<endl;
+			//cout<<"**************"<<controller.takeoff<<"*"<<endl;
+			if(controller.takeoff)
+			{	
+				boolMsg.data=true;
+		 		cout<<"--------------------------------------------------------------------"<<endl;
+				vel_msg.linear.z=0;
+				///cout<<controller.yaw<<endl;
 
-				if(controller.avoidTheta==0)
-			{
-
-				if (controller.jumpCompleted)
-				{
-					angle=controller.levyTheta;
-					jump=controller.levyJump;				
-
-					xinit=controller.x;
-			        yinit=controller.y;
-			        distance=0;
-			        oldDistance=0;
-			        controller.jumpCompleted=false;
-			        cout<<"got a new jump"<<endl;
-				}
-				else
+					if(controller.avoidTheta==0)
 				{
 
-					if(abs(angle-controller.yaw)/angle>angleErr&&!override)
+					if (controller.jumpCompleted)
 					{
-						vel_msg.linear.x=0;
-						cout<<"rotating"<<endl;
-						float xx=cos(angle-controller.yaw);
-						float yy=sin(angle-controller.yaw);
+						angle=controller.levyTheta;
+						jump=controller.levyJump;				
 
-						if (atan2(yy,xx)<0)
-						{
-							vel_msg.angular.z=-1;
-						}
-						else if (atan2(yy,xx)>0)
-						{
-							vel_msg.angular.z=1;
-						}
-						controller.state="rotating";
-
+						xinit=controller.x;
+				        yinit=controller.y;
+				        distance=0;
+				        oldDistance=0;
+				        controller.jumpCompleted=false;
+				       //cout<<"got a new jump"<<endl;
 					}
 					else
 					{
-						vel_msg.linear.x=1;
-						cout<<"moving forward"<<endl;
-						//controller.jumpCompleted=true;
-						vel_msg.angular.z=0;
-						
 
-					}
-		
+						if(abs(angle-controller.yaw)/angle>angleErr&&!override)
+						{
+							vel_msg.linear.x=0;
+							//cout<<"rotating"<<endl;
+							float xx=cos(angle-controller.yaw);
+							float yy=sin(angle-controller.yaw);
 
-					distance=sqrt(pow(xinit-controller.x,2)+pow(yinit-controller.y,2))+oldDistance;
-					cout<<"distance "<<distance<<endl;
-					cout<<"jump "<<jump<<endl;
-					if (distance>jump)
-					{
-						controller.jumpCompleted=true;
-						cout<<"Jump Completed"<<endl;
-						override=false;					
-					}
-				}
-			}
-			else
-			{	
-				//distance=sqrt(pow(xinit-controller.x,2)+pow(yinit-controller.y,2));
-				oldDistance=distance;
-				cout<<"oldDistance: "<<oldDistance<<endl;
-				xinit=controller.x;
-			    yinit=controller.y;
-			    vel_msg.linear.x=0.5;
-				vel_msg.angular.z=1.2*controller.avoidTheta;
-				override=true;
+							if (atan2(yy,xx)<0)
+							{
+								vel_msg.angular.z=-1;
+							}
+							else if (atan2(yy,xx)>0)
+							{
+								vel_msg.angular.z=1;
+							}
+							controller.state="rotating";
 
+						}
+						else
+						{
+							vel_msg.linear.x=1;
+							//cout<<"moving forward"<<endl;
+							//controller.jumpCompleted=true;
+							vel_msg.angular.z=0;
+							
 
-			}
-
+						}
 			
 
-			vel.publish(vel_msg);
-			ack.publish(boolMsg);
+						distance=sqrt(pow(xinit-controller.x,2)+pow(yinit-controller.y,2))+oldDistance;
+						//cout<<"distance "<<distance<<endl;
+						//cout<<"jump "<<jump<<endl;
+						if (distance>jump)
+						{
+							controller.jumpCompleted=true;
+							//cout<<"Jump Completed"<<endl;
+							override=false;					
+						}
+					}
+				}
+				else
+				{	
+					//distance=sqrt(pow(xinit-controller.x,2)+pow(yinit-controller.y,2));
+					oldDistance=distance;
+					//cout<<"oldDistance: "<<oldDistance<<endl;
+					xinit=controller.x;
+				    yinit=controller.y;
+				    vel_msg.linear.x=0.5;
+					vel_msg.angular.z=1.2*controller.avoidTheta;
+					override=true;
+
+
+				}
+
+				
+				cout<<"controller teleop "<<controller.teleop<<endl;
+				vel.publish(vel_msg);
+				ack.publish(boolMsg);
+			}
+			else
+			{
+				boolMsg.data=false;
+				ack.publish(boolMsg);
+			}
 		}
 		else
 		{
-			boolMsg.data=false;
-			ack.publish(boolMsg);
+			cout<<"controller teleop "<<controller.teleop<<endl;
+			cout<<"IN REMOTE CONTROL"<<endl;
 		}
-		
         ros::spinOnce();
         rate.sleep();
     		cout<<"--------------------------------------------------------------------"<<endl;
