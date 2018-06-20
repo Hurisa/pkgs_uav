@@ -66,8 +66,7 @@ Besides, whatever the ground robot (base station) is add this to the namespace
 
     <node name="map_to_image_node_mod" pkg="map_to_jpeg" type="map_to_image_node_mod" respawn="false" output="screen" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image"/>
 
-
-
+and do CATKIN_MAKE..... please ;)
 
 
 
