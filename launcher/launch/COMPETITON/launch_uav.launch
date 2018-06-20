@@ -16,10 +16,6 @@
  	<node name="dwa" pkg="uav_map" type="dwa" output="screen"/> 
 	<node name="controller" pkg="uav_map" type="controller" output="screen"/>
 	
-	<node pkg="edinbots_detection" type="detect_victim_rgb.py" name="DetectVictimRGB">
-		<remap to="front_cam/camera/image" from="camera/rgb/image_raw"/>
-	</node>
-		
 	<node pkg="tf" type="static_transform_publisher" name="broadcaster_laser_frame_to_hokyuo" args="0 0 0 0 0 0 $(arg robot_name)/laser0_frame $(arg robot_name)/hokuyo_link 100" />
 	<!-- <node pkg="tf" type="static_transform_publisher" name="world_to_map" args="0 0 0 0 0 0 /world /map 100" /> -->
 	
@@ -29,12 +25,11 @@
       <param name="base_frame" value="/$(arg robot_name)/base_link"/>
     </node>
 	
+
+	<node name="map_to_image_node_mod" pkg="map_to_jpeg" type="map_to_image_node_mod" respawn="false" output="screen" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image"/>
+
+
 </group>
-
-		
-
-
-
 <!--
 <include file="$(find hector_mapping)/launch/mapping_default.launch">
   <arg name="robot_name" value="$(arg robot_name)"/>
@@ -46,3 +41,4 @@
 
 
 </launch> 
+

@@ -8,36 +8,34 @@
   <arg name="y" default="0"/>
   <arg name="z" default="0"/>
   <arg name="yaw" default="0"/> -->
-  <arg name="conf" default="0.6"/>
+  <arg name="conf" default="0.4"/>
   <arg name="width" default="100"/>
-  
-  
+
+ 
   
   <!-- <node pkg="gazebo_ros" type="spawn_model" name="spawn_model_$(arg robot_name)" args="-urdf -param $(arg robot_name)/robot_description -namespace $(arg robot_name) -model $(arg robot_name) -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg yaw)"/>
   -->
-  <group ns="$(arg robot_name)">  
-    
-   
-    <node name="map_to_image_node_mod" pkg="map_to_jpeg" type="ground_map_control" respawn="false" output="screen" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image">
-      <param name="save_map" value="false"/>
-    </node>
+  <group ns="$(arg robot_name)">   
+
 
     <node name="map_merge" type="map_merge" pkg="multirobot_map_merge" respawn="false" output="screen">
      <param name="known_init_poses" value="false"/>
-     <param name="world_frame" value="/map"/>
+     <param name="world_frame" value="/world"/>
      <param name="robot_topic_name" value=""/>
      <param name="confidence" value="$(arg conf)"/>
     </node>
 
-    <!-- <node pkg="robot_state_publisher" type="state_publisher" name="robot_state_publisher"/> -->
-    <!-- <node name="tf_static_odom_base" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 $(arg robot_name)/hokuyo_link $(arg robot_name)/hokuyo_frame 100"/> -->
+    <node name="map_to_image_node_mod" pkg="map_to_jpeg" type="map_to_image_node_mod" respawn="false" output="screen" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image"/>
 
-     <!-- <node name="map_to_image_node_mod" pkg="map_to_jpeg" type="map_to_image_node_mod" respawn="false" output="log" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image"/>-->
-      
-    <!--<node name="ground_map_control" pkg="map_to_jpeg" type="ground_map_control" cwd="node" respawn="false" output="screen" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image">
-      <param name="save_map" value="true"/>
+
+    <!-- <node name="map_to_image_node_mod" pkg="map_to_jpeg" type="ground_map_control" respawn="false" output="screen" if="$(arg ground)" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image">
+      <param name="save_map" value="false"/>
     </node> -->
-    
+
+    <!-- <node name="tf_static_odom_base" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 $(arg robot_name)/hokuyo_link $(arg robot_name)/hokuyo_frame 100"/> -->
+  
+
+
     
 	</group>
 
