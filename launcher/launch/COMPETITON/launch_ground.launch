@@ -27,7 +27,9 @@
 
     <node name="map_to_image_node_mod" pkg="map_to_jpeg" type="map_to_image_node_mod" respawn="false" output="screen" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image"/>
 
-
+	<node name="map_to_image_node_mod" pkg="map_to_jpeg" type="ground_map_control" respawn="false" output="screen" if="$(arg ground)" args="map:=/$(arg robot_name0)/map map_image/full:=/$(arg robot_name0)/map_image">
+      <param name="save_map" value="false"/>
+    </node>
     <!-- <node name="map_to_image_node_mod" pkg="map_to_jpeg" type="ground_map_control" respawn="false" output="screen" if="$(arg ground)" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image">
       <param name="save_map" value="false"/>
     </node> -->
