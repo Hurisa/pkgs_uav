@@ -8,72 +8,32 @@
   <arg name="y" default="0"/>
   <arg name="z" default="0"/>
   <arg name="yaw" default="0"/> -->
-  <arg name="conf" default="0.6"/>
+  <arg name="conf" default="0.4"/>
   <arg name="width" default="100"/>
-  <arg name="env_width" default = "100"/>
-  <arg name="env_height" default = "100"/>
-  <arg name="update_rate" default = "1"/>
-  <arg name="n_robots" default = "3 "/>
-  <arg name="pheromone_resolution" default = "0.25"/>
-  <arg name="robot_trail_radius" default = "0.8"/>
-  <arg name="robot_trail_value" default = "75"/>
-  <arg name="wall_trail_value" default = "255"/>
-  <arg name="diffusion_sigma" default = "0.5"/>
-  <arg name="diffusion_rate" default = "100"/>
-  
-  <arg name="robot_ID" default="0"/>
-  <arg name="distance_to_walls" default="1"/>
-  <arg name="cmd_val_update_rate" default="10"/>
-  <arg name="recoveryTime" default="0.4"/>
-  
+ 
   
   <!-- <node pkg="gazebo_ros" type="spawn_model" name="spawn_model_$(arg robot_name)" args="-urdf -param $(arg robot_name)/robot_description -namespace $(arg robot_name) -model $(arg robot_name) -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg yaw)"/>
   -->
   <group ns="$(arg robot_name)">   
-    <param name="robot_description" command="$(find xacro)/xacro '$(find p3at_description)/urdf/pioneer3at_rc2016.urdf.xacro' robot_name:=$(arg robot_name)" />
-    <param name="tf_prefix" type="string" value="$(arg robot_name)" /> 
-    
-    
-   <node name="robot_controller" pkg="ground_controller" type="wrapperGround.py" respawn="false" output="log">
-      <param name="distance_to_walls" value="$(arg distance_to_walls)"/>
-      <param name="cmd_val_update_rate" value="$(arg cmd_val_update_rate)"/>
-      <param name="recoveryTime" value="$(arg recoveryTime)"/>
-      <param name="robot_ID" value="$(arg robot_ID)"/>
-    </node> 
-    
-    
-    
+  
 
     <node name="map_merge" type="map_merge" pkg="multirobot_map_merge" respawn="false" output="log">
      <param name="known_init_poses" value="false"/>
-     <param name="world_frame" value="/map"/>
+     <param name="world_frame" value="/world"/>
      <param name="robot_topic_name" value=""/>
      <param name="confidence" value="$(arg conf)"/>
     </node>
 
-    <node pkg="robot_state_publisher" type="state_publisher" name="robot_state_publisher"/>
+    <node name="map_to_image_node_mod" pkg="map_to_jpeg" type="map_to_image_node_mod" respawn="false" output="screen" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image"/>
 
-    <node name="tf_static_odom_base" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 $(arg robot_name)/hokuyo_link $(arg robot_name)/hokuyo_frame 100"/>
 
-    <node name="map_to_image_node_mod" pkg="map_to_jpeg" type="map_to_image_node_mod" respawn="false" output="log" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image"/>
+    <!-- <node name="map_to_image_node_mod" pkg="map_to_jpeg" type="ground_map_control" respawn="false" output="screen" if="$(arg ground)" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image">
+      <param name="save_map" value="false"/>
+    </node> -->
 
-   <node name="pheromone_map" pkg="pheromone_map" type="pheromone_wrapper.py" respawn="false" output="screen">
-        <param name="width" value="$(arg width)"/>    
-        <param name="env_width" value = "$(arg env_width)"/>
-        <param name="env_height" value = "$(arg env_height)"/>
-        <param name="update_rate" value = "$(arg update_rate)"/>
-        <param name="n_robots" value = "$(arg n_robots)"/>
-        <param name="pheromone_resolution" value = "$(arg pheromone_resolution)"/>
-        <param name="robot_trail_radius" value = "$(arg robot_trail_radius)"/>
-        <param name="robot_trail_value" value = "$(arg robot_trail_value)"/>
-        <param name="wall_trail_value" value = "$(arg wall_trail_value)"/>
-        <param name="diffusion_sigma" value = "$(arg diffusion_sigma)"/>
-        <param name="diffusion_rate" value = "$(arg diffusion_rate)"/>
-    </node> 
-    
-    <node name="ground_map_control" pkg="map_to_jpeg" type="ground_map_control" cwd="node" respawn="false" output="screen" args="map:=/$(arg robot_name)/map map_image/full:=/$(arg robot_name)/map_image">
-      <param name="save_map" value="true"/>
-    </node>
+    <!-- <node name="tf_static_odom_base" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 $(arg robot_name)/hokuyo_link $(arg robot_name)/hokuyo_frame 100"/> -->
+  
+
     
     
 	</group>
