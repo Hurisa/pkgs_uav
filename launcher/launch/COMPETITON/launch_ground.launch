@@ -10,14 +10,15 @@
   <arg name="yaw" default="0"/> -->
   <arg name="conf" default="0.4"/>
   <arg name="width" default="100"/>
+
  
   
   <!-- <node pkg="gazebo_ros" type="spawn_model" name="spawn_model_$(arg robot_name)" args="-urdf -param $(arg robot_name)/robot_description -namespace $(arg robot_name) -model $(arg robot_name) -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg yaw)"/>
   -->
   <group ns="$(arg robot_name)">   
-  
 
-    <node name="map_merge" type="map_merge" pkg="multirobot_map_merge" respawn="false" output="log">
+
+    <node name="map_merge" type="map_merge" pkg="multirobot_map_merge" respawn="false" output="screen">
      <param name="known_init_poses" value="false"/>
      <param name="world_frame" value="/world"/>
      <param name="robot_topic_name" value=""/>
@@ -34,7 +35,7 @@
     <!-- <node name="tf_static_odom_base" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 $(arg robot_name)/hokuyo_link $(arg robot_name)/hokuyo_frame 100"/> -->
   
 
-    
+
     
 	</group>
 
