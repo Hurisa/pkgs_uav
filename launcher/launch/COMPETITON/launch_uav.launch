@@ -16,7 +16,7 @@
  	<node name="dwa" pkg="uav_map" type="dwa" output="screen"/> 
 	<node name="controller" pkg="uav_map" type="controller" output="screen"/>
 	
-	<node pkg="tf" type="static_transform_publisher" name="broadcaster_laser_frame_to_hokyuo" args="0 0 0 0 0 0 $(arg robot_name)/laser0_frame $(arg robot_name)/hokuyo_link 100" />
+	<!-- <node pkg="tf" type="static_transform_publisher" name="broadcaster_laser_frame_to_hokyuo" args="0 0 0 0 0 0 $(arg robot_name)/laser0_frame $(arg robot_name)/hokuyo_link 100" />-->
 	<!-- <node pkg="tf" type="static_transform_publisher" name="world_to_map" args="0 0 0 0 0 0 /world /map 100" /> -->
 	
 	<node name="slam_gmapping" pkg="gmapping" type="slam_gmapping" respawn="false" output="screen" args="scan:=/$(arg robot_name)/scan map:=/$(arg robot_name)/map">

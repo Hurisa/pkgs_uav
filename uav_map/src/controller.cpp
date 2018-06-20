@@ -275,11 +275,6 @@ int main(int argc, char **argv)
 				if(victimState)
 					{
 						cout<<" I have found a live victim hoooooray!!!"<<endl;
-						vel_msg.linear.x=0;
-						vel_msg.linear.y=0;
-						vel_msg.linear.z=-1;
-						vel.publish(vel_msg);
-
 					}
 					else
 					{
